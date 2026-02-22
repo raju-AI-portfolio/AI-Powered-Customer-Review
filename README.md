@@ -70,6 +70,7 @@ Gmail Notification (if TRUE)
 Fields:
 - Product Name (Text)
 - Product Review (Text Area)
+This triggers the workflow.
 
 ---
 
@@ -205,28 +206,21 @@ Email Alert: Triggered
 
 ---
 
-## 📂 Repository Structure
-
-```
-/workflow-export.json
-/README.md
-/screenshots/
-/sample-output/
-```
-
----
 
 ## 🔮 Future Enhancements
 
-- Dashboard integration (Power BI / Looker Studio)
-- Slack / Teams notifications
-- Trend visualization charts
-- Topic modeling
-- Multilingual support
+Dashboard integration (Power BI / Looker Studio)
+
+Slack / Teams notifications
+
+Trend visualization charts
+
+Topic modeling for feature-level insights
+
+Multilingual review support
+
+Auto-tagging feature issues (battery, sound, comfort)
 
 ---
 
-## 📜 License
 
-Developed as part of Module 2 Mini Project – GenAI Automation Workflow (Educational Purpose).
-Workflow Screenshot:
