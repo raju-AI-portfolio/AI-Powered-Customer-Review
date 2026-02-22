@@ -223,4 +223,7 @@ Auto-tagging feature issues (battery, sound, comfort)
 
 ---
 
+WorkFlow Screenshot-
+
+<img width="1837" height="877" alt="image" src="https://github.com/user-attachments/assets/40235393-a6b7-4178-a24d-374cae1cd672" />
 
