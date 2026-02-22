@@ -1,0 +1,452 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMonth"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1s9cpa-cU7InwpDvPCyckP00h3c7ta1XSDYophVMo2N4/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1s9cpa-cU7InwpDvPCyckP00h3c7ta1XSDYophVMo2N4/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "event": "=anyUpdate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6ce1ac54-b162-41c7-a75d-117b53f8c41d",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "RypKUMLzy7qn7INE",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "gpt-4"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        208
+      ],
+      "id": "0a0e1e80-7d80-44cb-b784-65eb9d8fb29e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "vQ8GLFgz1CkrZeGS",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "you are an AI assistant specialized in sumarizing product review. sumarize the product review in concise way. output should be in text only ",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $json['Product Review'] }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        144,
+        0
+      ],
+      "id": "9f4a0048-29c9-4203-8427-7dde3b762250",
+      "name": "Sumarrizer"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "gpt-4"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        208
+      ],
+      "id": "5f2f5071-657b-4eee-b4b5-3bb5b7ef0ead",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "vQ8GLFgz1CkrZeGS",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "gpt-4"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        208
+      ],
+      "id": "3326f82a-efa4-4bf5-a104-c93faaeaa5f5",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "vQ8GLFgz1CkrZeGS",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an AI assistant specialized in analyzing customer product reviews sentiments. analyse the sentiment (Positive/Negative/Neutral) of the Product \n.Output should be in this format: ​\nSentiment: <Positive/Negative/Neutral> | Score: <numeric value between 0 and 1>​, O being bositive and 1 being negative ",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $('Google Sheets Trigger').item.json['Product Review'] }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "8af6cc98-8ebf-430d-98a4-bab453a84bb9",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an AI specialized in text tone classification.classify the tone (Informative/Persuasive/Friendly) of the Product \nReview Summary.\nOutput should be in this format: ​\nTone: <Informative/Persuasive/Friendly> | Score: <numeric value between 0 and 1>",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $('Sumarrizer').item.json.text }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        752,
+        0
+      ],
+      "id": "1c1673ae-ea48-4da2-aa35-7e966b404541",
+      "name": "Summary Tone Classification"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wvrJzKBTVunT_wZgJ4JpB5Ititkgjnyt8-Bef9YyFEc",
+          "mode": "list",
+          "cachedResultName": "Head Phone_Review_Summary",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wvrJzKBTVunT_wZgJ4JpB5Ititkgjnyt8-Bef9YyFEc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1wvrJzKBTVunT_wZgJ4JpB5Ititkgjnyt8-Bef9YyFEc/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product Name": "={{ $('Google Sheets Trigger').item.json['Product Name'] }}",
+            "Product Review": "={{ $('Google Sheets Trigger').item.json['Product Review'] }}",
+            "Product Review Summary": "={{ $('Sumarrizer').item.json.text }}",
+            "Sentiment and Score": "={{ $('Sentiment Analysis').item.json.text }}",
+            "Tone and Score": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product Review",
+              "displayName": "Product Review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product Review Summary",
+              "displayName": "Product Review Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentiment and Score",
+              "displayName": "Sentiment and Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tone and Score",
+              "displayName": "Tone and Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "28344a52-2b9b-4555-9874-e40322693e6f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eGtWzX17xxlbPbIc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "19295dec-6d9f-48b9-95e6-369e5fa4081f",
+              "leftValue": "Sentiment: Negative | Score: 1",
+              "rightValue": "={{ $('Sentiment Analysis').item.json.text }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "c52a1c62-4dfa-4521-829a-1138d03d84cf",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "raj.doms@gmail.com",
+        "subject": "=Negative Customer Review Received – <{{ $json['Product Name'] }}>",
+        "emailType": "text",
+        "message": "=Dear Team Lead,​ We have received a negative customer review for the product - {{ $json['Product Name'] }}. ​ Please find the feedback summary below:​ Product Review Summary-  {{ $json['Product Review Summary'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1456,
+        -144
+      ],
+      "id": "21d7fe44-4209-45db-a47d-6ce6a418f6a8",
+      "name": "Send a message",
+      "webhookId": "8ac940b6-24e7-4ef3-ad7a-c8cb15e40fea",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Zjr0jeIenxQB3toB",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sumarrizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sumarrizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sumarrizer": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summary Tone Classification",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Summary Tone Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary Tone Classification": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "58ca4980-5281-4e3f-912f-e8726a22b253",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59e07d1c4133ca54236681a3ff1f8db32f8852cf4582fb28ca3a38dd2ed35481"
+  },
+  "id": "759w42j1fBIyfzAvjbMY0",
+  "tags": []
+}
