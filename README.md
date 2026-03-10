@@ -47,6 +47,9 @@ This workflow solves the problem by:
 
 ## 🔄 Workflow Architecture
 
+<img width="1600" height="597" alt="image" src="https://github.com/user-attachments/assets/5be6d0c9-458f-4dc0-8f84-a6c3cab32d2e" />
+
+
 On Form Submission  
         ↓  
 Summarization (LLM)  
